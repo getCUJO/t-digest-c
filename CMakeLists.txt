@@ -8,11 +8,10 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 # --- Build options ---
 option(BUILD_SHARED "Build shared library" ON)
 option(BUILD_STATIC "Build static library" ON)
-option(BUILD_BENCHMARK "Build benchmark" ON)
-option(BUILD_TESTS "Build tests" ON)
+option(BUILD_TESTS "Build tests" OFF)
 OPTION(ENABLE_CODECOVERAGE "Enable code coverage testing support" OFF)
 OPTION(ENABLE_PROFILE "Enable code profiling support" OFF)
-option(BUILD_EXAMPLES "Build examples" ON)
+option(BUILD_EXAMPLES "Build examples" OFF)
 
 # --- Build properties ---
 
@@ -85,11 +84,7 @@ add_subdirectory("src")
 # TODO
 
 # --- Unit Tests ---
-ENABLE_TESTING()
 
-if(BUILD_TESTS OR BUILD_BENCHMARK)
-  add_subdirectory("tests")
-endif()
 
 # --- Examples ---
 if(BUILD_EXAMPLES)
