@@ -72,24 +72,6 @@ jobs:
             make clean
             make coverage
             cd build && bash <(curl -s https://codecov.io/bash) -f coverage.info -X gcov -x gcov-7 || echo "Codecov did not collect coverage reports"
-      - run:
-          name: Install benchmark dependencies
-          command: |
-            apt update
-            apt install python3-pip -y
-            pip3 install redisbench-admin
-      - run:
-          name: Benchmark
-          command: |
-            make bench
-            redisbench-admin export \
-              --results-format google.benchmark \
-              --github_repo $CIRCLE_PROJECT_REPONAME \
-              --github_org $CIRCLE_PROJECT_USERNAME \
-              --github_branch $CIRCLE_BRANCH \
-              --benchmark-result-file results.json
-
-
 
 workflows:
   commit:

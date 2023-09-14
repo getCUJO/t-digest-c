@@ -69,14 +69,6 @@ Assuming you've followed the previous build steps, it should be as easy as:
 make test
 ```
 
-## Benchmarking
-
-Assuming you've followed the previous build steps, it should be as easy as:
-``` 
-# Run the benchmark
-make bench
-```
-
 ## Code of Conduct
 
 Please note that this project is released with a Contributor Code of

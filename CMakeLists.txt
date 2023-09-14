@@ -8,7 +8,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 # --- Build options ---
 option(BUILD_SHARED "Build shared library" ON)
 option(BUILD_STATIC "Build static library" ON)
-option(BUILD_BENCHMARK "Build benchmark" OFF)
 option(BUILD_TESTS "Build tests" OFF)
 OPTION(ENABLE_CODECOVERAGE "Enable code coverage testing support" OFF)
 OPTION(ENABLE_PROFILE "Enable code profiling support" OFF)
