@@ -166,6 +166,9 @@ int td_init(double compression, td_histogram_t **result) {
     if (!histogram) {
         return 1;
     }
+    // set them to null to avoid uninitialized branch in td_free
+    histogram->nodes_mean = NULL;
+    histogram->nodes_weight = NULL;
     histogram->cap = capacity;
     histogram->compression = (double)compression;
     td_reset(histogram);
