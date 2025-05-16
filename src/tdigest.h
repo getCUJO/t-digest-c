@@ -33,11 +33,11 @@ struct td_histogram {
     double max;
 
     // cap is the total size of nodes
-    int cap;
+    unsigned long cap;
     // merged_nodes is the number of merged nodes at the front of nodes.
-    int merged_nodes;
+    unsigned long merged_nodes;
     // unmerged_nodes is the number of buffered nodes.
-    int unmerged_nodes;
+    unsigned long unmerged_nodes;
 
     // we run the merge in reverse every other merge to avoid left-to-right bias in merging
     long long total_compressions;
@@ -131,7 +131,7 @@ int td_compress(td_histogram_t *h);
  * * @return 0 on success, EDOM if overflow was detected as a consequence of merging the the
  * provided histogram. If overflow is detected the original histogram is not detected.
  */
-int td_merge(td_histogram_t *h, td_histogram_t *from);
+int td_merge(td_histogram_t *into, td_histogram_t *from);
 
 /**
  * Returns the fraction of all points added which are &le; x.
@@ -139,7 +139,7 @@ int td_merge(td_histogram_t *h, td_histogram_t *from);
  * @param x The cutoff for the cdf.
  * @return The fraction of all data which is less or equal to x.
  */
-double td_cdf(td_histogram_t *h, double x);
+double td_cdf(td_histogram_t *h, double val);
 
 /**
  * Returns an estimate of the cutoff such that a specified fraction of the data
@@ -183,7 +183,7 @@ double td_trimmed_mean_symmetric(td_histogram_t *h, double proportion_to_cut);
  *
  * @return The compression factor originally used to set up the TDigest.
  */
-int td_compression(td_histogram_t *h);
+double td_compression(td_histogram_t *h);
 
 /**
  * Returns the number of points that have been added to this TDigest.
@@ -197,7 +197,7 @@ long long td_size(td_histogram_t *h);
  *
  * @return The number of centroids being used.
  */
-int td_centroid_count(td_histogram_t *h);
+unsigned long td_centroid_count(td_histogram_t *h);
 
 /**
  * Get minimum value from the histogram.  Will return __DBL_MAX__ if the histogram
@@ -241,7 +241,7 @@ const double *td_centroids_mean(td_histogram_t *h);
  *
  * @return The centroid weight.
  */
-long long td_centroids_weight_at(td_histogram_t *h, int pos);
+long long td_centroids_weight_at(td_histogram_t *h, unsigned long pos);
 
 /**
  * Get the centroid mean for 'this' histogram and 'pos'.
@@ -251,7 +251,7 @@ long long td_centroids_weight_at(td_histogram_t *h, int pos);
  *
  * @return The centroid mean.
  */
-double td_centroids_mean_at(td_histogram_t *h, int pos);
+double td_centroids_mean_at(td_histogram_t *h, unsigned long pos);
 
 #ifdef __cplusplus
 }
