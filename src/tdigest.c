@@ -102,7 +102,8 @@ static void td_qsort(double *means, long long *weights, unsigned int start, unsi
 }
 
 static inline size_t cap_from_compression(double compression) {
-    if ((size_t)compression > ((SIZE_MAX / sizeof(double) / TD_CAPACITY_MULTIPLIER) - TD_CAPACITY_FIXEDOFFSET)) {
+    if ((size_t)compression >
+        ((SIZE_MAX / sizeof(double) / TD_CAPACITY_MULTIPLIER) - TD_CAPACITY_FIXEDOFFSET)) {
         return 0;
     }
     return (TD_CAPACITY_MULTIPLIER * (size_t)(compression)) + TD_CAPACITY_FIXEDOFFSET;
@@ -112,7 +113,9 @@ static inline bool should_td_compress(td_histogram_t *h) {
     return ((h->merged_nodes + h->unmerged_nodes) >= (h->cap - 1));
 }
 
-static inline unsigned long next_node(td_histogram_t *h) { return h->merged_nodes + h->unmerged_nodes; }
+static inline unsigned long next_node(td_histogram_t *h) {
+    return h->merged_nodes + h->unmerged_nodes;
+}
 
 static inline int check_overflow(const double v) {
     // double-precision overflow detected on h->unmerged_weight
@@ -123,7 +126,7 @@ static inline int check_overflow(const double v) {
 }
 
 static inline int check_td_overflow(const double new_unmerged_weight,
-                                     const double new_total_weight) {
+                                    const double new_total_weight) {
     // double-precision overflow detected on h->unmerged_weight
     if (new_unmerged_weight == INFINITY) {
         return EDOM;
@@ -260,8 +263,7 @@ double td_cdf(td_histogram_t *h, double val) {
             if (val == h->min) {
                 return CDF_MEDIAN / merged_weight_d;
             }
-            return (1 + (val - h->min) / width * (left_centroid_weight / 2 - 1)) /
-                    merged_weight_d;
+            return (1 + (val - h->min) / width * (left_centroid_weight / 2 - 1)) / merged_weight_d;
         }
         // this should be redundant with the check val < h->min
         return 0;
@@ -276,8 +278,8 @@ double td_cdf(td_histogram_t *h, double val) {
                 return 1 - CDF_MEDIAN / merged_weight_d;
             }
             // there has to be a single sample exactly at max
-            const double dq = (1 + (h->max - val) / width * (right_centroid_weight / 2 - 1)) /
-                                merged_weight_d;
+            const double dq =
+                (1 + (h->max - val) / width * (right_centroid_weight / 2 - 1)) / merged_weight_d;
             return 1 - dq;
         }
         return 1;
@@ -297,7 +299,7 @@ double td_cdf(td_histogram_t *h, double val) {
                 it++;
             }
             return (weightSoFar + dw / 2) / (double)h->merged_weight;
-        } 
+        }
         if (h->nodes_mean[it] <= val && val < h->nodes_mean[it + 1]) {
             const double node_weight = (double)h->nodes_weight[it];
             const double node_weight_next = (double)h->nodes_weight[it + 1];
@@ -329,23 +331,21 @@ double td_cdf(td_histogram_t *h, double val) {
                 double base = weightSoFar + node_weight / 2 + leftExcludedW;
                 return (base + dwNoSingleton * (val - node_mean) / (node_mean_next - node_mean)) /
                        merged_weight_d;
-            }                  // this is simply caution against floating point madness
-                // it is conceivable that the centroids will be different
-                // but too near to allow safe interpolation
+            } // this is simply caution against floating point madness
+              // it is conceivable that the centroids will be different
+              // but too near to allow safe interpolation
             double dw = (node_weight + node_weight_next) / 2;
             return (weightSoFar + dw) / merged_weight_d;
-           
-        }              
+        }
         weightSoFar += (double)h->nodes_weight[it];
-       
     }
     return 1 - CDF_MEDIAN / merged_weight_d;
 }
 
 static double td_internal_iterate_centroids_to_index(const td_histogram_t *h, const double index,
                                                      const double left_centroid_weight,
-                                                     const unsigned long total_centroids, double *weightSoFar,
-                                                     unsigned long *node_pos) {
+                                                     const unsigned long total_centroids,
+                                                     double *weightSoFar, unsigned long *node_pos) {
     if (left_centroid_weight > 1 && index < left_centroid_weight / 2) {
         // there is a single sample at min so we interpolate with less weight
         return h->min + (index - 1) / (left_centroid_weight / 2 - 1) * (h->nodes_mean[0] - h->min);
@@ -381,7 +381,7 @@ static double td_internal_iterate_centroids_to_index(const td_histogram_t *h, co
                 if (index - *weightSoFar < 0.5) {
                     // within the singleton's sphere
                     return node_mean;
-                }                      
+                }
                 leftUnit = 0.5;
             }
             double rightUnit = 0;
@@ -640,7 +640,8 @@ int td_compress(td_histogram_t *h) {
         if (should_add) {
             h->nodes_weight[cur] += h->nodes_weight[i];
             const double delta = h->nodes_mean[i] - h->nodes_mean[cur];
-            const double weighted_delta = (delta * (double)h->nodes_weight[i]) / (double)h->nodes_weight[cur];
+            const double weighted_delta =
+                (delta * (double)h->nodes_weight[i]) / (double)h->nodes_weight[cur];
             h->nodes_mean[cur] += weighted_delta;
         } else {
             weight_so_far += (double)h->nodes_weight[cur];
@@ -654,7 +655,7 @@ int td_compress(td_histogram_t *h) {
         }
     }
     h->merged_nodes = cur + 1;
-    h->merged_weight = (long long) total_weight;
+    h->merged_weight = (long long)total_weight;
     h->unmerged_nodes = 0;
     h->unmerged_weight = 0;
     h->total_compressions++;
@@ -671,10 +672,12 @@ const long long *td_centroids_weight(td_histogram_t *h) { return h->nodes_weight
 
 const double *td_centroids_mean(td_histogram_t *h) { return h->nodes_mean; }
 
-long long td_centroids_weight_at(td_histogram_t *h, unsigned long pos) { return h->nodes_weight[pos]; }
+long long td_centroids_weight_at(td_histogram_t *h, unsigned long pos) {
+    return h->nodes_weight[pos];
+}
 
 double td_centroids_mean_at(td_histogram_t *h, unsigned long pos) {
-    if (pos < 0 || pos > h->merged_nodes) {
+    if (pos > h->merged_nodes) {
         return NAN;
     }
     return h->nodes_mean[pos];
