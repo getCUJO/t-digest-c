@@ -26,27 +26,27 @@
 #define MM_PI 3.14159265358979323846
 
 struct td_histogram {
-    // compression is a setting used to configure the size of centroids when merged.
-    double compression;
+	// compression is a setting used to configure the size of centroids when merged.
+	double compression;
 
-    double min;
-    double max;
+	double min;
+	double max;
 
-    // cap is the total size of nodes
-    unsigned long cap;
-    // merged_nodes is the number of merged nodes at the front of nodes.
-    unsigned long merged_nodes;
-    // unmerged_nodes is the number of buffered nodes.
-    unsigned long unmerged_nodes;
+	// cap is the total size of nodes
+	unsigned long cap;
+	// merged_nodes is the number of merged nodes at the front of nodes.
+	unsigned long merged_nodes;
+	// unmerged_nodes is the number of buffered nodes.
+	unsigned long unmerged_nodes;
 
-    // we run the merge in reverse every other merge to avoid left-to-right bias in merging
-    long long total_compressions;
+	// we run the merge in reverse every other merge to avoid left-to-right bias in merging
+	long long total_compressions;
 
-    long long merged_weight;
-    long long unmerged_weight;
+	long long merged_weight;
+	long long unmerged_weight;
 
-    double *nodes_mean;
-    long long *nodes_weight;
+	double *nodes_mean;
+	long long *nodes_weight;
 };
 
 typedef struct td_histogram td_histogram_t;
@@ -159,7 +159,10 @@ double td_quantile(td_histogram_t *h, double q);
  * The values array should be allocated by the caller.
  * @return 0 on success, ENOMEM if the provided destination array is null.
  */
-int td_quantiles(td_histogram_t *h, const double *quantiles, double *values, size_t length);
+int td_quantiles(td_histogram_t *h,
+		 const double *quantiles,
+		 double *values,
+		 size_t length);
 
 /**
  * Returns the trimmed mean ignoring values outside given cutoff upper and lower limits.
@@ -168,7 +171,8 @@ int td_quantiles(td_histogram_t *h, const double *quantiles, double *values, siz
  * @param rightmost_cut Fraction to cut off of the right tail of the distribution.
  * @return The trimmed mean ignoring values outside given cutoff upper and lower limits;
  */
-double td_trimmed_mean(td_histogram_t *h, double leftmost_cut, double rightmost_cut);
+double
+td_trimmed_mean(td_histogram_t *h, double leftmost_cut, double rightmost_cut);
 
 /**
  * Returns the trimmed mean ignoring values outside given a symmetric cutoff limits.
