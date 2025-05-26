@@ -16,7 +16,7 @@ int main(void)
 		td_new(500); //NOLINT(readability-magic-numbers)
 	printf("compression is %f capacity is %lu\n",
 	       mdigest->compression,
-	       mdigest->cap);
+	       (unsigned long)mdigest->cap);
 	double seeds[STREAM_SIZE];
 	for (int i = 0; i < STREAM_SIZE; ++i) {
 		seeds[i] = randMToN(0, 10);
