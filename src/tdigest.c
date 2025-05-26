@@ -593,7 +593,7 @@ static double td_internal_trimmed_mean(const td_histogram_t *h,
 		}
 	}
 
-	return trimmed_sum / trimmed_count;
+	return trimmed_sum / td_max_(trimmed_count, 1.0);
 }
 
 double td_trimmed_mean_symmetric(td_histogram_t *h, double proportion_to_cut)
